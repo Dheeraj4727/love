@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Story I Never Planned</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Poppins:wght@300&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    background: #0f0f0f;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+}
+
+/* STAR BACKGROUND */
+#stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+/* FLOATING HEARTS */
+
+.hearts{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:1;
+}
+
+.heart{
+position:absolute;
+color:#ff4d6d;
+font-size:20px;
+animation:floatHeart 6s linear infinite;
+}
+
+@keyframes floatHeart{
+
+0%{
+transform:translateY(100vh) scale(0.5);
+opacity:0;
+}
+
+50%{
+opacity:1;
+}
+
+100%{
+transform:translateY(-10vh) scale(1.2);
+opacity:0;
+}
+
+}
+
+/* HEART EXPLOSION */
+
+.big-heart{
+position:fixed;
+font-size:30px;
+color:#ff4d6d;
+animation:explode 2s ease-out forwards;
+z-index:999;
+}
+
+@keyframes explode{
+
+0%{
+transform:scale(0.5);
+opacity:1;
+}
+
+100%{
+transform:translateY(-200px) scale(2);
+opacity:0;
+}
+
+}
+
+/* PASSWORD SCREEN */
+.lock-screen {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: radial-gradient(circle at center, #1a1a1a, #000);
+    text-align: center;
+}
+
+.lock-screen input {
+    padding: 10px 15px;
+    background: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+    text-align: center;
+}
+
+.lock-screen button {
+    margin-top: 15px;
+    padding: 10px 25px;
+    border: 1px solid #fff;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* MAIN CONTENT */
+.main {
+    display: none;
+    overflow-y: auto;
+    height: 100vh;
+}
+
+.hero {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3em;
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.section {
+    padding: 80px 20px;
+    text-align: center;
+}
+
+/* PHOTO FOCUS */
+.gallery {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.photo-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 25px;
+}
+
+.gallery img {
+    width: 340px;
+    height: 440px;
+    object-fit: cover;
+    border-radius: 20px;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: 0.8s ease;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+    cursor: pointer;
+}
+
+.gallery img.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.gallery img:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 60px rgba(255, 140, 0, 0.9);
+}
+
+.photo-card p {
+    margin-top: 12px;
+    font-size: 16px;
+    opacity: 0.8;
+    max-width: 300px;
+}
+
+.gallery-video {
+    width: 320px;
+    height: 420px;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 0 40px rgba(255, 120, 0, 0.4);
+}
+
+.fade-in.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* SHAYARI */
+.shayari {
+    max-width: 650px;
+    margin: 40px auto;
+    font-size: 24px;
+    font-style: italic;
+    line-height: 1.9;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: 2s ease;
+    text-shadow:
+        0 0 10px rgba(255, 215, 0, 0.6),
+        0 0 20px rgba(255, 140, 0, 0.4);
+}
+
+.shayari.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* LETTER */
+.letter {
+    max-width: 600px;
+    margin: auto;
+    line-height: 1.7;
+    opacity: 0;
+    transition: 2s;
+}
+
+.letter.show {
+    opacity: 1;
+}
+
+footer {
+    padding: 30px;
+    opacity: 0.6;
+}
+
+/* LIGHTBOX */
+#lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#lightbox img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="hearts" id="hearts"></div>
+<canvas id="stars"></canvas>
+
+<div class="lock-screen" id="lockScreen">
+<h1>Enter The Date When We First Met</h1>
+<input type="password" id="passwordInput" placeholder="DDMMYYYY">
+<button onclick="checkPassword()">Unlock</button>
+<p id="error" style="color:red; display:none;">Oops wrong date..</p>
+</div>
+
+<div class="main" id="mainContent">
+
+<div class="hero">
+<h1>A Story I Never Planned…</h1>
+<button onclick="startExperience()">Begin</button>
+</div>
+
+<div class="section">
+<h2>The Way I See You</h2>
+<p style="opacity:0.7;">Some people look beautiful. You… you feel beautiful.</p>
+
+<div class="gallery">
+
+<div class="photo-card fade-in">
+<img src="photo1.jpg">
+<p>This smile? It fixes more than you know. 🖤</p>
+</div>
+
+<div class="photo-card fade-in">
+<img src="photo2.jpg">
+<p>The calm in your eyes feels like home. 🌙</p>
+</div>
+
+<div class="photo-card fade-in">
+<img src="photo3.jpg">
+<p>If peace had a face… it would look like this. 🤍</p>
+</div>
+
+<div class="photo-card fade-in">
+<img src="photo4.jpg">
+<p>Some moments don’t need captions… they just stay.</p>
+</div>
+
+<div class="photo-card fade-in">
+<img src="photo5.jpg">
+<p>I didn’t fall fast… I fell gently. And I meant it. 🌸</p>
+</div>
+
+<div class="photo-card fade-in">
+<video autoplay muted loop playsinline class="gallery-video">
+<source src="video1.mp4" type="video/mp4">
+</video>
+<p>And this… I could replay forever. 🎬</p>
+</div>
+
+</div>
+</div>
+
+<div class="section">
+<div class="shayari" id="shayariText">
+Tere jaisi dhoondhu lekin milti nahi hai… 🌙  
+Ghadi waqt ki tere bina hilti nahi hai ⏳  
+Ye saari lutati mujhpe khudko...  
+Par tere aage meri chalti nahi hai ❤️‍🔥
+</div>
+</div>
+
+<div class="section">
+<div class="letter" id="loveLetter">
+I didn’t plan to meet someone like you.
+
+But somehow,
+you became my favorite part of normal days.
+
+It’s not dramatic.
+It’s just real.
+
+And I don’t know where this goes,
+but I know I like where it feels.
+</div>
+</div>
+
+<div class="section">
+<p id="finalLine" style="opacity:0; transition:2s; font-size:20px;">
+And I don’t say this easily.
+</p>
+</div>
+
+<div class="section">
+
+<h2>So I just want to ask you something…</h2>
+
+<p style="font-size:22px;">
+Will you be mine? ❤️
+</p>
+
+<button onclick="yesClicked()" style="
+padding:14px 35px;
+font-size:18px;
+border:none;
+border-radius:30px;
+background:#ff4d6d;
+color:white;
+cursor:pointer;
+margin-top:15px;
+">
+Yes ❤️
+</button>
+
+</div>
+
+<audio id="heartbeat" src="heartbeat.mp3"></audio>
+<audio id="music" src="song.mp3"></audio>
+
+<footer>
+Made quietly, but meant loudly.
+</footer>
+
+</div>
+
+<div id="lightbox">
+<img id="lightboxImg">
+</div>
+
+<div id="celebrationMessage" style="
+display:none;
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+text-align:center;
+z-index:9999;
+font-size:32px;
+color:#ff4d6d;
+font-family:'Playfair Display',serif;
+">
+❤️ You just made me the happiest person ❤️
+</div>
+
+<script>
+
+/* FLOATING HEARTS */
+
+const heartsContainer=document.getElementById("hearts");
+
+function createHeart(){
+
+const heart=document.createElement("div");
+
+heart.classList.add("heart");
+
+heart.innerHTML="❤";
+
+heart.style.left=Math.random()*100+"vw";
+
+heart.style.fontSize=Math.random()*20+15+"px";
+
+heartsContainer.appendChild(heart);
+
+setTimeout(()=>{
+heart.remove();
+},6000);
+
+}
+
+setInterval(createHeart,500);
+
+/* PROPOSAL BUTTON */
+
+function yesClicked(){
+
+document.getElementById("celebrationMessage").style.display="block";
+
+for(let i=0;i<40;i++){
+
+const heart=document.createElement("div");
+
+heart.classList.add("big-heart");
+
+heart.innerHTML="❤";
+
+heart.style.left=Math.random()*100+"vw";
+
+heart.style.top=Math.random()*100+"vh";
+
+document.body.appendChild(heart);
+
+setTimeout(()=>{
+heart.remove();
+},2000);
+
+}
+
+}
+
+/* STAR ANIMATION */
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = [];
+for(let i = 0; i < 150; i++){
+stars.push({
+x: Math.random() * canvas.width,
+y: Math.random() * canvas.height,
+radius: Math.random() * 1.5,
+speed: Math.random() * 0.5
+});
+}
+
+function drawStars(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="white";
+stars.forEach(star=>{
+ctx.beginPath();
+ctx.arc(star.x,star.y,star.radius,0,Math.PI*2);
+ctx.fill();
+star.y += star.speed;
+if(star.y>canvas.height) star.y=0;
+});
+requestAnimationFrame(drawStars);
+}
+drawStars();
+
+/* PASSWORD */
+function checkPassword(){
+if(document.getElementById("passwordInput").value==="19012026"){
+document.getElementById("lockScreen").style.display="none";
+document.getElementById("mainContent").style.display="block";
+document.body.style.overflow="auto";
+}else{
+document.getElementById("error").style.display="block";
+}
+}
+
+/* EXPERIENCE */
+function startExperience(){
+document.getElementById("heartbeat").play();
+setTimeout(()=>{ document.getElementById("music").play(); },4000);
+
+document.querySelectorAll(".gallery img").forEach((img,index)=>{
+setTimeout(()=>{ img.classList.add("show"); }, index*800);
+});
+
+setTimeout(()=>{ document.getElementById("shayariText").classList.add("show"); },2000);
+setTimeout(()=>{ document.getElementById("loveLetter").classList.add("show"); },5000);
+setTimeout(()=>{ document.getElementById("finalLine").style.opacity="1"; },9000);
+}
+
+/* LIGHTBOX */
+const images=document.querySelectorAll(".gallery img");
+const lightbox=document.getElementById("lightbox");
+const lightboxImg=document.getElementById("lightboxImg");
+
+images.forEach(img=>{
+img.addEventListener("click",()=>{
+lightbox.style.display="flex";
+lightboxImg.src=img.src;
+});
+});
+
+lightbox.addEventListener("click",()=>{
+lightbox.style.display="none";
+});
+
+</script>
+
+</body>
+</html>
